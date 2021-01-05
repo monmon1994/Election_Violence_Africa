@@ -29,6 +29,9 @@ moz <- moz[-1,]
 uga <- read_csv("data/conflict_data_uga.csv")
 uga <- uga[-1,]
 
+uga <- read_csv(url("https://data.humdata.org/dataset/e71f2e33-b7ea-48ee-86e2-fce72dc17eaa/resource/40037563-3ded-4ac9-8822-895465731c9a/download/conflict_data_uga.csv"))
+uga <- uga[-1,]
+
 zmb <- read_csv("data/conflict_data_zmb.csv")
 zmb <- zmb[-1,]
 
@@ -357,7 +360,7 @@ uga %>%
     labs(title = "Frequency of violence against citizens in Uganda",
          subtitle = "The ACLED dataset 1997-2020",
          y = "", x = "", 
-         caption = "Source: ACLED Conflict Data, 11 November 2020. 
+         caption = "Source: ACLED Conflict Data, 30 December 2020. 
 Graphic: Monique Bennett at Good Governance Africa") +
     annotate("text", x = 1998.5, y = 190, 
              label = paste(strwrap("Ugandans vote to reject multi-party politics continuing Museveni's `no-party` system.", 35), collapse = "\n")) + 
@@ -397,6 +400,34 @@ Graphic: Monique Bennett at Good Governance Africa") +
     guides(fill = guide_legend(title = "Type of violence"))
 
 ggsave("uga_violence_plot.png", dpi = 600)
+
+### only 2020
+
+uga %>% 
+    filter(event_type_dummy == 1,
+           year == 2020) %>% 
+    ggplot(aes(x = event_date, y = event_type_dummy, fill = sub_event_type)) +
+    geom_bar(stat = "identity") +
+    scale_y_continuous(labels = scales::comma) +
+    scale_fill_viridis_d(option = "E") +
+    labs(title = "Frequency of violence against citizens in Uganda",
+         subtitle = "The ACLED dataset 1997-2020",
+         y = "", x = "", 
+         caption = "Source: ACLED Conflict Data, 30 December 2020. 
+Graphic: Monique Bennett at Good Governance Africa") +
+    theme(panel.background = element_blank(),
+          text = element_text(family = "Helvetica", size = 13),
+          panel.grid.major = element_line(colour = "#f0f0f0"),
+          panel.grid.minor = element_blank(),
+          axis.ticks = element_blank(),
+          strip.background = element_rect(fill = "#f5f5f5"),
+          plot.background = element_blank(),
+          strip.text.x = element_text(hjust = 0),
+          plot.caption = element_text(hjust = 0),
+          plot.title = element_text(size = 18),
+          legend.position = "bottom") +
+    guides(fill = guide_legend(title = "Type of violence"))
+
 
 ### Zambia
 
