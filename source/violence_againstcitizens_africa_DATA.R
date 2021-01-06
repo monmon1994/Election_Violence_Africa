@@ -403,20 +403,21 @@ ggsave("uga_violence_plot.png", dpi = 600)
 
 ### only 2020
 
+cbPalette <- c("#00AFBB", "#E7B800", "#FC4E07", "#00AFBB", "#E7B800", "#FC4E07", "#00AFBB", "#E7B800", "#FC4E07", "#00AFBB", "#E7B800", "#FC4E07")
+    
 uga %>% 
-    filter(event_type_dummy == 1,
-           year == 2020) %>% 
-    ggplot(aes(x = event_date, y = event_type_dummy, fill = sub_event_type)) +
+    filter(event_date > "2020-10-01") %>% 
+    ggplot(aes(x = event_date, y = event_type_dummy, fill = event_type)) +
     geom_bar(stat = "identity") +
-    scale_y_continuous(labels = scales::comma) +
-    scale_fill_viridis_d(option = "E") +
-    labs(title = "Frequency of violence against citizens in Uganda",
-         subtitle = "The ACLED dataset 1997-2020",
+    scale_x_date(date_labels = "%b-%d",
+                 date_breaks = "1 week",  expand = c(0,0)) +
+    scale_fill_manual(values=cbPalette) +
+    labs(title = "Frequency of violence against citizens in during Uganda's 2021 Election Campaign",
          y = "", x = "", 
          caption = "Source: ACLED Conflict Data, 30 December 2020. 
 Graphic: Monique Bennett at Good Governance Africa") +
     theme(panel.background = element_blank(),
-          text = element_text(family = "Helvetica", size = 13),
+          text = element_text(family = "Helvetica", size = 15),
           panel.grid.major = element_line(colour = "#f0f0f0"),
           panel.grid.minor = element_blank(),
           axis.ticks = element_blank(),
@@ -424,9 +425,19 @@ Graphic: Monique Bennett at Good Governance Africa") +
           plot.background = element_blank(),
           strip.text.x = element_text(hjust = 0),
           plot.caption = element_text(hjust = 0),
-          plot.title = element_text(size = 18),
+          plot.title = element_text(size = 20),
           legend.position = "bottom") +
     guides(fill = guide_legend(title = "Type of violence"))
+
+ggsave("uganda_election_violence.png")
+
+## count plot
+
+count_plot <- uga %>%
+    filter(event_date > "2020-11-05") %>% 
+    group_by(event_type_dummy) %>%
+    summarise(count = n())%>%
+    arrange(desc(count))
 
 
 ### Zambia
